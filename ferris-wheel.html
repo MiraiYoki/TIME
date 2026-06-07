@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>可爱摩天轮</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(180deg, #87CEEB 0%, #FFE4B5 50%, #98FB98 100%);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 云朵装饰 */
+        .cloud {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            opacity: 0.9;
+            animation: floatCloud 20s linear infinite;
+        }
+
+        .cloud::before, .cloud::after {
+            content: '';
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+        }
+
+        .cloud1 {
+            width: 100px;
+            height: 40px;
+            top: 10%;
+            left: 10%;
+        }
+        .cloud1::before {
+            width: 50px;
+            height: 50px;
+            top: -25px;
+            left: 15px;
+        }
+        .cloud1::after {
+            width: 60px;
+            height: 60px;
+            top: -35px;
+            left: 40px;
+        }
+
+        .cloud2 {
+            width: 120px;
+            height: 50px;
+            top: 15%;
+            right: 15%;
+            animation-delay: -10s;
+        }
+        .cloud2::before {
+            width: 60px;
+            height: 60px;
+            top: -30px;
+            left: 20px;
+        }
+        .cloud2::after {
+            width: 70px;
+            height: 70px;
+            top: -40px;
+            left: 50px;
+        }
+
+        .cloud3 {
+            width: 80px;
+            height: 35px;
+            top: 8%;
+            left: 50%;
+            animation-delay: -5s;
+        }
+        .cloud3::before {
+            width: 40px;
+            height: 40px;
+            top: -20px;
+            left: 10px;
+        }
+        .cloud3::after {
+            width: 50px;
+            height: 50px;
+            top: -28px;
+            left: 30px;
+        }
+
+        @keyframes floatCloud {
+            0% { transform: translateX(-100px); }
+            100% { transform: translateX(calc(100vw + 100px)); }
+        }
+
+        /* 星星装饰 */
+        .star {
+            position: absolute;
+            font-size: 30px;
+            color: #FFD700;
+            animation: twinkle 2s ease-in-out infinite;
+        }
+
+        .star1 { top: 5%; left: 20%; animation-delay: 0s; }
+        .star2 { top: 12%; left: 75%; animation-delay: 0.5s; }
+        .star3 { top: 8%; left: 60%; animation-delay: 1s; }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* 毛玻璃卡片 */
+        .glass-card {
+            position: absolute;
+            padding: 18px 26px;
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            border-radius: 16px;
+            color: #fff;
+            font-family: "Noto Serif SC", "Songti SC", serif;
+            font-size: 14px;
+            line-height: 1.8;
+            max-width: 260px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
+                        inset 0 0 80px rgba(255, 255, 255, 0.08);
+            opacity: 0;
+            transform: scale(0.85) translateY(15px);
+            animation: cardAppear 0.5s ease forwards;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            letter-spacing: 1.5px;
+            pointer-events: none;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 16px;
+            background: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.2) 0%,
+                rgba(255, 255, 255, 0.05) 40%,
+                rgba(255, 255, 255, 0.1) 100%
+            );
+            pointer-events: none;
+        }
+
+        @keyframes cardAppear {
+            0% {
+                opacity: 0;
+                transform: scale(0.85) translateY(15px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* 退出按钮 */
+        .exit-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 44px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #fff;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
+        }
+
+        .exit-btn:hover {
+            background: rgba(255, 255, 255, 0.35);
+            transform: scale(1.1);
+        }
+
+        /* 摩天轮容器 */
+        .ferris-wheel-container {
+            position: relative;
+            width: 500px;
+            height: 650px;
+        }
+
+        /* 底座 */
+        .base {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 250px;
+            background: linear-gradient(180deg, #8B4513 0%, #A0522D 50%, #6B4423 100%);
+            clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+            z-index: 1;
+        }
+
+        /* 摩天轮中心位置 - 位于底座顶部 */
+        .ferris-center {
+            position: absolute;
+            bottom: 250px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* 中心轴 */
+        .center-axle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF8C00 100%);
+            border-radius: 50%;
+            border: 8px solid #B8860B;
+            z-index: 10;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .center-axle::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 25px;
+            height: 25px;
+            background: #8B0000;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(139, 0, 0, 0.5);
+        }
+
+        /* 轮盘外圈 */
+        .wheel-rim {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            height: 400px;
+            border: 15px solid #FF69B4;
+            border-radius: 50%;
+            box-shadow: 0 0 30px rgba(255, 105, 180, 0.4);
+            z-index: 2;
+        }
+
+        /* 旋转的轮盘 */
+        .rotating-wheel {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            height: 400px;
+            z-index: 3;
+            animation: rotateFerris 20s linear infinite;
+        }
+
+        @keyframes rotateFerris {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* 辐条 */
+        .spoke {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 3px;
+            height: 185px;
+            background: linear-gradient(180deg, #FF69B4 0%, #FF1493 100%);
+            transform-origin: 50% 0%;
+        }
+
+        .spoke:nth-child(1) { transform: translate(-50%, 0%) rotate(0deg); }
+        .spoke:nth-child(2) { transform: translate(-50%, 0%) rotate(45deg); }
+        .spoke:nth-child(3) { transform: translate(-50%, 0%) rotate(90deg); }
+        .spoke:nth-child(4) { transform: translate(-50%, 0%) rotate(135deg); }
+        .spoke:nth-child(5) { transform: translate(-50%, 0%) rotate(180deg); }
+        .spoke:nth-child(6) { transform: translate(-50%, 0%) rotate(225deg); }
+        .spoke:nth-child(7) { transform: translate(-50%, 0%) rotate(270deg); }
+        .spoke:nth-child(8) { transform: translate(-50%, 0%) rotate(315deg); }
+
+        /* 座舱 - 使用JavaScript控制旋转，而不是CSS动画 */
+        .cabin {
+            position: absolute;
+            top: 185px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 5;
+        }
+
+        /* 座舱主体 */
+        .cabin-body {
+            width: 50px;
+            height: 45px;
+            border-radius: 15px 15px 20px 20px;
+            position: relative;
+        }
+
+        /* 座舱窗户 */
+        .cabin-window {
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 20px;
+            background: linear-gradient(180deg, #87CEEB 0%, #B0E0E6 100%);
+            border-radius: 10px 10px 5px 5px;
+            border: 3px solid rgba(255, 255, 255, 0.6);
+        }
+
+        /* 不同颜色的座舱 */
+        .spoke:nth-child(1) .cabin-body { background: linear-gradient(180deg, #FF6B6B 0%, #FF4757 100%); }
+        .spoke:nth-child(2) .cabin-body { background: linear-gradient(180deg, #4ECDC4 0%, #44B0AA 100%); }
+        .spoke:nth-child(3) .cabin-body { background: linear-gradient(180deg, #FFE66D 0%, #FFD93D 100%); }
+        .spoke:nth-child(4) .cabin-body { background: linear-gradient(180deg, #A8E6CF 0%, #88D8B0 100%); }
+        .spoke:nth-child(5) .cabin-body { background: linear-gradient(180deg, #FF9FF3 0%, #FF8ED4 100%); }
+        .spoke:nth-child(6) .cabin-body { background: linear-gradient(180deg, #9B59B6 0%, #8E44AD 100%); }
+        .spoke:nth-child(7) .cabin-body { background: linear-gradient(180deg, #3498DB 0%, #2980B9 100%); }
+        .spoke:nth-child(8) .cabin-body { background: linear-gradient(180deg, #E74C3C 0%, #C0392B 100%); }
+    </style>
+</head>
+<body>
+    <button class="exit-btn" onclick="window.location.href='index.html'">✕</button>
+    
+    <div class="cloud cloud1"></div>
+    <div class="cloud cloud2"></div>
+    <div class="cloud cloud3"></div>
+
+    <div class="star star1">⭐</div>
+    <div class="star star2">✨</div>
+    <div class="star star3">🌟</div>
+
+    <div id="cards-container" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100;"></div>
+
+    <div class="ferris-wheel-container">
+        <div class="base"></div>
+        
+        <div class="ferris-center">
+            <div class="wheel-rim"></div>
+            
+            <div class="rotating-wheel" id="rotatingWheel">
+                <div class="spoke">
+                    <div class="cabin">
+                        <div class="cabin-body">
+                            <div class="cabin-window"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="spoke">
+                    <div class="cabin">
+                        <div class="cabin-body">
+                            <div class="cabin-window"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="spoke">
+                    <div class="cabin">
+                        <div class="cabin-body">
+                            <div class="cabin-window"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="spoke">
+                    <div class="cabin">
+                        <div class="cabin-body">
+                            <div class="cabin-window"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="spoke">
+                    <div class="cabin">
+                        <div class="cabin-body">
+                            <div class="cabin-window"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="spoke">
+                    <div class="cabin">
+                        <div class="cabin-body">
+                            <div class="cabin-window"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="spoke">
+                    <div class="cabin">
+                        <div class="cabin-body">
+                            <div class="cabin-window"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="spoke">
+                    <div class="cabin">
+                        <div class="cabin-body">
+                            <div class="cabin-window"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="center-axle"></div>
+        </div>
+    </div>
+
+    <script>
+        console.log('🎡 可爱摩天轮加载成功！');
+
+        // 使用JavaScript保持座舱直立
+        const cabins = document.querySelectorAll('.cabin');
+        let rotation = 0;
+        const duration = 20000; // 20秒一圈
+        const startTime = performance.now();
+
+        function updateCabins(currentTime) {
+            const elapsed = currentTime - startTime;
+            rotation = (elapsed % duration) / duration * 360;
+            
+            cabins.forEach((cabin, index) => {
+                const spokeAngle = index * 45;
+                const totalRotation = rotation + spokeAngle;
+                cabin.style.transform = `translateX(-50%) rotate(${-totalRotation}deg)`;
+            });
+            
+            requestAnimationFrame(updateCabins);
+        }
+
+        requestAnimationFrame(updateCabins);
+
+        // 卡片系统
+        const sentences = [
+            "她说，涂指甲油是女孩子们获取快乐的最小途径。",
+            "它是太阳的颜色。",
+            "象征温暖的颜色，和你的名字，一样。",
+            "阳光暖暖色。",
+            "你知道吗？薄荷的花语是——愿与你再次相逢。",
+            "她说，小动物的绒毛是这世上最治愈的存在。",
+            "会呼吸的蒲公英？她的比喻总是如此精妙。",
+            "于是，你在人类获得快乐的方式上又加了一条——吃蛋糕、看到好天气，以及抚摸像蒲公英一样的小动物。",
+            "我们一起描绘的，是陪伴本身。",
+            "向暖，你最喜欢哪一部电影？",
+            "《剪刀手爱德华》……",
+            "去坐摩天轮吧，到离太阳最近的地方。",
+            "她说站在最高的地方许愿最灵验，你说她应该和太阳待在一起。",
+            "骑士……如果捍卫的是她的笑容和幸福，那你愿意做向暖的骑士。",
+            "我不会丢下你的，我会带你到最温暖的地方去，向暖。",
+            "向暖，你笑起来，就像好天气。",
+            "和她一起经历的，原来就是生命的本身。",
+            "四月的细雨轻轻飘落的时候，她说，烧纸的时候也是离温暖最近的时候。",
+            "徐向暖，你笑起来就像雨刮器。",
+            "不过向暖，下次你对我笑的时候，我希望你是因为喜欢我。",
+            "是吧，有星星有月亮、有晚风、有虫鸣，有人陪伴的地方，就是我的理想国。",
+            "靠近太阳应该会更暖和些，所以你应该多和太阳待在一起。",
+            "离太阳最近的地方，在哪里？",
+            "人类会在做梦时去任何想去的地方。",
+            "那时久，你想去哪儿呢？",
+            "你去哪儿，我就去哪儿。",
+            "因为我是聪明的人类",
+            "我什么都知道",
+            "如果自首的路上被抓了还叫自首吗",
+            "在眼镜没发明出来之前，眼镜蛇叫什么",
+            "小——保——安——",
+            "（包括被我气到宕机）",
+            "我会陪你找回来"
+        ];
+
+        const container = document.getElementById('cards-container');
+        let cardIndex = 0;
+        const maxVisibleCards = 8;
+
+        function getRandomPosition() {
+            const padding = 80;
+            const maxX = window.innerWidth - 340;
+            const maxY = window.innerHeight - 200;
+            
+            return {
+                x: Math.random() * maxX + padding,
+                y: Math.random() * maxY + padding
+            };
+        }
+
+        function createCard(text) {
+            const card = document.createElement('div');
+            card.className = 'glass-card';
+            card.textContent = text;
+            
+            const pos = getRandomPosition();
+            card.style.left = pos.x + 'px';
+            card.style.top = pos.y + 'px';
+            
+            container.appendChild(card);
+            
+            // 移除超出数量限制的最旧卡片
+            const cards = container.querySelectorAll('.glass-card');
+            if (cards.length > maxVisibleCards) {
+                const oldest = cards[0];
+                oldest.style.opacity = '0';
+                oldest.style.transform = 'scale(0.9)';
+                oldest.style.transition = 'all 0.6s ease';
+                setTimeout(() => {
+                    oldest.remove();
+                }, 600);
+            }
+        }
+
+        // 等待3秒后开始
+        setTimeout(() => {
+            function showNextCard() {
+                createCard(sentences[cardIndex]);
+                cardIndex = (cardIndex + 1) % sentences.length; // 循环使用句子
+                // 1.0秒显示一张（更快）
+                setTimeout(showNextCard, 1000);
+            }
+            showNextCard();
+        }, 3000);
+    </script>
+</body>
+</html>
